@@ -15,16 +15,21 @@ public class UserLoanHistory {
     }
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
-    long id;
+    private long id;
 
-    @JoinColumn(nullable = false)
     @ManyToOne
-    private User user;
-
-    @Column (nullable = false)
+    User user;
     String bookName;
 
     boolean isReturn;
+
+    public long getId() {
+        return id;
+    }
+
+    public User getUser() {
+        return user;
+    }
 
     public String getBookName() {
         return bookName;

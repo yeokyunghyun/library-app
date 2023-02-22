@@ -5,23 +5,27 @@ import com.group.libraryapp.domain.user.User;
 public class UserResponse {
     private long id;
     private String name;
-    private long age;
+    private Integer age;
 
-    public UserResponse(User user) {
-        this.id = user.getId();
-        this.name = user.getName();
-        this.age = user.getAge();
-    }
-
-    public long getId() {
-        return id;
+    public UserResponse(long id, String name, int age) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
     }
 
     public String getName() {
         return name;
     }
 
-    public long getAge() {
+    public Integer getAge() {
         return age;
+    }
+
+    public long getId() {return id;} // 얘때문이엇음
+
+    public UserResponse(User user) {
+        this.id = user.getId();
+        this.name = user.getName();
+        this.age = user.getAge();
     }
 }

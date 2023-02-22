@@ -2,24 +2,24 @@ spring:
   config:
     activate:
       on-profile: local
-    datasource:
-      url: "jdbc:h2:mem:library;MODE=MYSQL;NON_KEYWORDS=USER"
-      username: "sa"
-      password: ""
-      driver-class-name: org.h2.Driver
-    jpa:
+  datasource:
+    url: "jdbc:h2:mem:library;MODE=MYSQL;NON_KEYWORDS=USER"
+    username: "sa"
+    password: ""
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
       hibernate:
-        ddl-auto: create
-      properties:
-        hibernate:
-          show_sql: true
-          format_sql: true
-          dialect: org.hibernate.dialect.H2Dialect
-    h2:
-      console:
-        enabled: true
-        path: /h2-console
-
+        format_sql: true
+        show_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
+    open-in-view: false
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
 ---
 spring:
   config:
@@ -32,9 +32,8 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: none #create -> 기존테이블이있는경우삭제하고 다시생성 ,  create-drop -> 스프링이 종료될때 모든 테이블을 제거
+      ddl-auto: none
     properties:
       hibernate:
-        show_sql: true
         format_sql: true
-        dialect: org.hibernate.dialect.MySQL8Dialect
+        show_sql: true

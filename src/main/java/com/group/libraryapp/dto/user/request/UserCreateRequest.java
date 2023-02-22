@@ -1,18 +1,15 @@
 package com.group.libraryapp.dto.user.request;
 
 public class UserCreateRequest {
-    long id;
-    String name;
-    long age;
+    //유저의 이름과 나이
+    private String name;
+    private Integer age;
 
-    public long id() {
-        return id;
-    }
     public String getName() {
         return name;
     }
 
-    public long getAge() {
+    public Integer getAge() {
         return age;
     }
 }

@@ -1,6 +1,9 @@
 package com.group.libraryapp.domain.book;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Entity
 public class Book {
@@ -8,17 +11,17 @@ public class Book {
     protected Book() {}
 
     public Book(String name) {
-        if(name == null || name.isBlank()) {
-            throw new IllegalArgumentException();
-        }
         this.name = name;
     }
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = false,length = 255, name = "name")
-    String name;
+    private String name;
+
+    public long getId() {
+        return id;
+    }
 
     public String getName() {
         return name;

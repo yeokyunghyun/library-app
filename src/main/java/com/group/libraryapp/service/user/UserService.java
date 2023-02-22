@@ -5,7 +5,6 @@ import com.group.libraryapp.domain.user.UserRepository;
 import com.group.libraryapp.dto.user.request.UserCreateRequest;
 import com.group.libraryapp.dto.user.request.UserUpdateRequest;
 import com.group.libraryapp.dto.user.response.UserResponse;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,39 +14,54 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
 
-   JdbcTemplate jdbcTemplate;
 
     private final UserRepository userRepository;
-    public UserService(UserRepository userRepository, JdbcTemplate jdbcTemplate) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.jdbcTemplate = jdbcTemplate;
     }
+
+
 
     @Transactional
     public void saveUser(UserCreateRequest request) {
-        userRepository.save(new User(request.getName(),request.getAge()));
+
+        /*String sql = "INSERT INTO user (name,age) VALUES(?,?)";
+        jdbctemplate.update(sql,request.getName(),request.getAge());*/
+
+        User user = new User(request.getName(),request.getAge());
+        userRepository.save(user);
     }
 
     @Transactional
-    public List<UserResponse> getUser() {
-        return userRepository.findAll()
-                .stream().map(UserResponse::new)
+    public List<UserResponse> getUsers() {
+       /* List<UserResponse> users = new ArrayList<>();
+        String sql = "SELECT * FROM user";
+        return jdbcTemplate.query(sql,(rs,rowNum) -> {
+            long id = rs.getLong("id");
+            String name = rs.getString("name");
+            int age = rs.getInt("age");
+
+            return new UserResponse(id,name,age);
+        });*/
+        return userRepository.findAll().stream()
+                .map(UserResponse::new)
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public void updateUser(UserUpdateRequest request) { //id는 기존에것을 가져오고 보내는 name은 직접 쓸 name을 가져옴
-        User user = userRepository.findById(request.getId()).orElseThrow(IllegalArgumentException::new);
+    public void updateUser(UserUpdateRequest request) {
 
-        user.updateName(request.getName());
+        User user = userRepository.findById(request.getId())
+                .orElseThrow(IllegalArgumentException::new);
+
+       user.updateName(request.getName());
+       //유저의 이름을 변경해주어야됨.
     }
 
     @Transactional
     public void deleteUser(String name) {
-        User user = userRepository
-                .findByName(name)
-                .orElseThrow(IllegalArgumentException::new);
-
+        User user = userRepository.findByName(name).orElseThrow(IllegalArgumentException::new);
         userRepository.delete(user);
+
     }
 }

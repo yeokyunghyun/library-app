@@ -4,6 +4,7 @@ import com.group.libraryapp.domain.book.Book;
 import com.group.libraryapp.domain.book.BookRepository;
 import com.group.libraryapp.domain.user.User;
 import com.group.libraryapp.domain.user.UserRepository;
+import com.group.libraryapp.domain.user.loanhistory.UserLoanHistory;
 import com.group.libraryapp.domain.user.loanhistory.UserLoanHistoryRepository;
 import com.group.libraryapp.dto.book.request.BookCreateRequest;
 import com.group.libraryapp.dto.book.request.BookLoanRequest;
@@ -14,14 +15,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class BookService {
 
-    private final UserRepository userRepository;
     private final BookRepository bookRepository;
+    private final UserRepository userRepository;
     private final UserLoanHistoryRepository userLoanHistoryRepository;
 
-    public BookService(BookRepository bookRepository,UserLoanHistoryRepository userLoanHistoryRepository, UserRepository userRepository) {
+    public BookService(BookRepository bookRepository, UserRepository userRepository, UserLoanHistoryRepository userLoanHistoryRepository) {
         this.bookRepository = bookRepository;
-        this.userLoanHistoryRepository = userLoanHistoryRepository;
         this.userRepository = userRepository;
+        this.userLoanHistoryRepository = userLoanHistoryRepository;
     }
 
     @Transactional
@@ -29,22 +30,19 @@ public class BookService {
         bookRepository.save(new Book(request.getName()));
     }
 
-    //
     @Transactional
-    public void loanBook(BookLoanRequest request) { //userName과 bookName을 받아오고있는상태
+    public void loanBook(BookLoanRequest request) {
+        Book book = bookRepository.findByName(request.getBookName()).orElseThrow();
 
-        Book book = bookRepository.findByName(request.getBookName()).orElseThrow(IllegalArgumentException::new);
-        if(userLoanHistoryRepository.existsByBookNameAndIsReturn(request.getBookName(),false)) throw new IllegalArgumentException();
+        if(userLoanHistoryRepository.existsByBookNameAndIsReturn(book.getName(),false)) throw new IllegalArgumentException();
 
-        User user = userRepository.findByName(request.getUserName()).orElseThrow(IllegalArgumentException::new);
-        user.save(book.getName());
+        User user = userRepository.findByName(request.getUserName()).orElseThrow();
+        user.loanBook(book.getName());
     }
-
 
     @Transactional
     public void returnBook(BookReturnRequest request) {
         User user = userRepository.findByName(request.getUserName()).orElseThrow(IllegalArgumentException::new);
         user.doReturn(request.getBookName());
     }
-    //책 대출과 책 반납
 }
